@@ -90,6 +90,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <i class="fa-solid fa-clock-rotate-left me-2"></i> Nhật Ký Hệ Thống
     </a>
 </li>
+            <li>
+                <a href="/TechFixPHP/pages/admin/shopee_sync.php" class="<?= $current_page == 'shopee_sync.php' ? 'active' : '' ?>">
+                    <i class="fa-brands fa-shopee"></i> Đồng Bộ Shopee
+                </a>
+            </li>
         <?php elseif ($role === 'technical'): ?>
             <li>
                 <a href="/TechFixPHP/pages/admin/tech_schedule.php" class="<?= $current_page == 'tech_schedule.php' ? 'active' : '' ?>">
