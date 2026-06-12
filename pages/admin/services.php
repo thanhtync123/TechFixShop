@@ -139,7 +139,7 @@ $result = mysqli_query($conn, "SELECT * FROM services ORDER BY id DESC");
 
                                 <div class="mb-3">
                                     <label class="form-label fw-bold">Tên dịch vụ <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control" required placeholder="VD: Vệ sinh máy lạnh" value="<?= htmlspecialchars($edit['name']) ?>">
+                                    <input type="text" name="name" id="serviceName" class="form-control" required placeholder="VD: Vệ sinh máy lạnh" value="<?= htmlspecialchars($edit['name']) ?>">
                                 </div>
 
                                 <div class="row g-2 mb-3">
@@ -149,7 +149,7 @@ $result = mysqli_query($conn, "SELECT * FROM services ORDER BY id DESC");
                                     </div>
                                     <div class="col-6">
                                         <label class="form-label fw-bold">Đơn vị tính</label>
-                                        <select name="unit" class="form-select" required>
+                                        <select name="unit" id="serviceUnit" class="form-select" required>
                                             <option value="">-- Chọn --</option>
                                             <?php 
                                             $units = ['cái', 'lần', 'máy', 'bộ', 'giờ', 'm2', 'điểm'];
@@ -163,8 +163,14 @@ $result = mysqli_query($conn, "SELECT * FROM services ORDER BY id DESC");
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Mô tả chi tiết</label>
-                                    <textarea name="description" class="form-control" rows="4" placeholder="Mô tả quy trình, phạm vi công việc..."><?= htmlspecialchars($edit['description']) ?></textarea>
+                                    <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+                                        <label class="form-label fw-bold mb-0">Mô tả chi tiết</label>
+                                        <button type="button" id="aiSuggestBtn" class="btn btn-sm btn-outline-primary">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i> AI gợi ý
+                                        </button>
+                                    </div>
+                                    <textarea name="description" id="serviceDescription" class="form-control" rows="4" placeholder="Mô tả quy trình, phạm vi công việc..."><?= htmlspecialchars($edit['description']) ?></textarea>
+                                    <small id="aiSuggestStatus" class="text-muted d-block mt-2"></small>
                                 </div>
 
                                 <div class="d-grid gap-2">
@@ -251,6 +257,53 @@ $result = mysqli_query($conn, "SELECT * FROM services ORDER BY id DESC");
             ]
         });
     });
+
+    const aiSuggestBtn = document.getElementById('aiSuggestBtn');
+    const aiSuggestStatus = document.getElementById('aiSuggestStatus');
+    const serviceNameInput = document.getElementById('serviceName');
+    const serviceUnitInput = document.getElementById('serviceUnit');
+    const serviceDescriptionInput = document.getElementById('serviceDescription');
+
+    if (aiSuggestBtn) {
+        aiSuggestBtn.addEventListener('click', async () => {
+            const name = serviceNameInput.value.trim();
+            const unit = serviceUnitInput.value.trim();
+
+            if (!name) {
+                aiSuggestStatus.textContent = 'Vui lòng nhập tên dịch vụ trước.';
+                serviceNameInput.focus();
+                return;
+            }
+
+            const oldText = aiSuggestBtn.innerHTML;
+            aiSuggestBtn.disabled = true;
+            aiSuggestBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gợi ý...';
+            aiSuggestStatus.textContent = 'AI đang viết mô tả phù hợp với tên dịch vụ.';
+
+            try {
+                const response = await fetch('ai_service_description.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, unit })
+                });
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'Không thể tạo mô tả.');
+                }
+
+                serviceDescriptionInput.value = data.description;
+                aiSuggestStatus.textContent = data.source === 'gemini'
+                    ? 'Đã tạo mô tả bằng AI.'
+                    : 'Đã tạo mô tả mẫu vì AI chưa phản hồi.';
+            } catch (error) {
+                aiSuggestStatus.textContent = error.message || 'Có lỗi khi gọi AI.';
+            } finally {
+                aiSuggestBtn.disabled = false;
+                aiSuggestBtn.innerHTML = oldText;
+            }
+        });
+    }
 </script>
 
 </body>

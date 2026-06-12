@@ -32,20 +32,12 @@ try {
 } catch (Exception $e) {
     error_log("Lỗi lấy provinces: " . $e->getMessage());
 }
+
+$pageTitle = 'Đặt Lịch Thông Minh - TECHFIX';
+$extraCss  = ['/TechFixPHP/assets/css/book.css'];
+include __DIR__ . '/template/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đặt Lịch Thông Minh - TECHFIX</title>
-    <link href="/TechFixPHP/assets/css/book.css" rel="stylesheet" />
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <style>
-        .toast { position: fixed; bottom: 20px; right: 20px; background: #333; color: #fff; padding: 1rem 1.5rem; border-radius: 8px; opacity: 0; transition: opacity 0.4s; z-index: 9999; }
-        .toast.show { opacity: 1; }
         #smart-results { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
         #price-notes { background: #fdfae5; padding: 15px; border-radius: 5px; border: 1px solid #e7d8a2; list-style-position: inside; }
         .slot { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid #ddd; margin: 10px 0; border-radius: 5px; }
@@ -62,23 +54,6 @@ try {
         .ai-diagnose-button { display: block; width: 100%; padding: 10px; margin-top: 10px; margin-bottom: 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s ease; }
         .ai-diagnose-button:hover { background-color: #0056b3; }
     </style>
-</head>
-<body>
-
-    <nav class="navbar">
-        <div class="container flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="../assets/image/VLUTE.png" alt="Logo" style="width:40px; height:60px; object-fit:contain; margin-right:8px;" />
-                <h1 class="logo" style="margin:8px; line-height:60px;">TECHFIX</h1>
-            </div>
-            <div class="nav-links flex items-center space-x-4">
-                <a href="../index.php">Trang Chủ |</a>
-                <a href="Service.php">Dịch Vụ |</a>
-                <a href="about.html">Về Chúng Tôi |</a>
-                <a href="contact.html">Liên Hệ |</a>
-            </div>
-        </div>
-    </nav>
 
     <div class="container my-4">
         
@@ -210,27 +185,6 @@ try {
         </div>
     </div> 
     
-    <div class="footer">
-        <div>
-            <h3>TECHFIX</h3>
-            <p>ĐẶT NIỀM TIN - TRAO CHỮ TÍN</p>
-        </div>
-        <div>
-            <h3>Liên Kết Nhanh</h3>
-            <a href="#services">Dịch Vụ</a> |
-            <a href="#about">Về Chúng Tôi</a> |
-            <a href="#contact">Liên Hệ</a>
-        </div>
-        <div>
-            <h3>Thông Tin Liên Hệ</h3>
-            <p>Email: support@techfix.com</p>
-            <p>Điện thoại: +84 123 456 789</p>
-            <p>Địa chỉ: P4 Phạm Thái Bường</p>
-        </div>
-        <p class="copy">© 2025 TECHFIX. All rights reserved.</p>
-    </div>
-    <div id="toast" class="toast"></div>
-
     <div id="aiDiagnoseModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeAIDiagnoseModal()">×</span>
@@ -539,7 +493,7 @@ try {
         document.getElementById('serviceId').value = serviceId; 
         closeAIDiagnoseModal(); 
         getSmartPrice(); 
-        showToast("Dịch vụ đã được chọn tự động bởi AI!");
+        showToast("Dịch vụ đã được chọn tự động bởi AI!", "success");
         document.getElementById('serviceId').focus();
     }
 
@@ -591,5 +545,5 @@ try {
         }
     });
 </script>
-</body>
-</html>
+
+<?php include __DIR__ . '/template/footer.php'; ?>

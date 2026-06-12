@@ -1,6 +1,6 @@
 <?php
 
-$conn = new mysqli("localhost", "root", "", "hometech_db", 3308);
+$conn = new mysqli("localhost", "root", "", "hometech_db", 3306);
 if ($conn->connect_error)
     die("Kết nối thất bại: " . $conn->connect_error);
 function asset($path)

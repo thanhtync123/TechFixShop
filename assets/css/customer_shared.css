@@ -1,0 +1,342 @@
+/* =============================================================
+   customer_shared.css  –  CSS dùng chung cho tất cả trang Customer
+   ============================================================= */
+
+/* --- DESIGN TOKENS --- */
+:root {
+    --tf-primary:    #1d4ed8;
+    --tf-primary-h:  #1e40af;
+    --tf-accent:     #0ea5e9;
+    --tf-success:    #16a34a;
+    --tf-warning:    #d97706;
+    --tf-danger:     #dc2626;
+    --tf-bg:         #f1f5f9;
+    --tf-surface:    #ffffff;
+    --tf-border:     #e2e8f0;
+    --tf-text:       #1e293b;
+    --tf-muted:      #64748b;
+    --tf-nav-h:      64px;
+    --tf-radius:     10px;
+    --tf-shadow:     0 2px 12px rgba(0,0,0,0.08);
+    --tf-shadow-md:  0 8px 30px rgba(0,0,0,0.12);
+}
+
+/* --- RESET CƠ BẢN --- */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background: var(--tf-bg);
+    color: var(--tf-text);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+ul { list-style: none; margin: 0; padding: 0; }
+
+/* -------------------------------------------------------
+   NAVBAR
+------------------------------------------------------- */
+.tf-navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    height: var(--tf-nav-h);
+    background: var(--tf-surface);
+    border-bottom: 1px solid var(--tf-border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.tf-nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+/* Logo */
+.tf-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--tf-text);
+    flex-shrink: 0;
+}
+.tf-logo-mark {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--tf-primary), var(--tf-accent));
+    display: grid; place-items: center;
+    color: #fff; font-size: 1rem;
+}
+.tf-logo span {
+    background: linear-gradient(120deg, var(--tf-primary), var(--tf-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Desktop nav links */
+.tf-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+}
+.tf-nav-links li a {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--tf-muted);
+    transition: background 0.2s, color 0.2s;
+}
+.tf-nav-links li a:hover,
+.tf-nav-links li a.active {
+    background: #eff6ff;
+    color: var(--tf-primary);
+}
+.tf-nav-links li a.active {
+    font-weight: 600;
+}
+
+/* Auth area */
+.tf-nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.tf-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--tf-primary);
+    background: #eff6ff;
+    padding: 6px 12px;
+    border-radius: 99px;
+    border: 1px solid #bfdbfe;
+}
+.tf-user-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Buttons */
+.tf-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.tf-btn-sm { padding: 6px 14px; font-size: 0.85rem; }
+.tf-btn-primary {
+    background: var(--tf-primary);
+    color: #fff;
+}
+.tf-btn-primary:hover { background: var(--tf-primary-h); transform: translateY(-1px); }
+.tf-btn-outline {
+    background: transparent;
+    color: var(--tf-primary);
+    border: 1.5px solid var(--tf-primary);
+}
+.tf-btn-outline:hover { background: #eff6ff; }
+.tf-btn-success { background: var(--tf-success); color: #fff; }
+.tf-btn-success:hover { background: #15803d; }
+.tf-btn-danger  { background: var(--tf-danger);  color: #fff; }
+.tf-btn-danger:hover  { background: #b91c1c; }
+
+/* Hamburger */
+.tf-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    padding: 6px;
+    cursor: pointer;
+    border: none;
+    margin-left: auto;
+}
+.tf-hamburger span {
+    width: 24px; height: 2.5px;
+    background: var(--tf-text);
+    border-radius: 2px;
+    transition: 0.3s;
+    display: block;
+}
+.tf-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.tf-hamburger.open span:nth-child(2) { opacity: 0; }
+.tf-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* Mobile menu */
+.tf-mobile-menu {
+    position: fixed;
+    top: var(--tf-nav-h);
+    left: 0; right: 0;
+    z-index: 999;
+    background: #0f172a;
+    padding: 12px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transform: translateY(-110%);
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    visibility: hidden;
+    box-shadow: var(--tf-shadow-md);
+}
+.tf-mobile-menu.open { transform: translateY(0); visibility: visible; }
+.tf-mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 9px;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: 0.2s;
+}
+.tf-mobile-menu a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+
+/* Spacer */
+.tf-nav-spacer { height: var(--tf-nav-h); }
+
+/* -------------------------------------------------------
+   FOOTER
+------------------------------------------------------- */
+.tf-footer {
+    background: #0f172a;
+    color: #94a3b8;
+    margin-top: 60px;
+    padding: 50px 0 0;
+}
+.tf-footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.2fr;
+    gap: 40px;
+}
+.tf-footer-brand p { font-size: 0.9rem; margin-top: 8px; color: #64748b; }
+.tf-footer-links h4,
+.tf-footer-contact h4 {
+    color: #f1f5f9;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+.tf-footer-links li { margin-bottom: 8px; }
+.tf-footer-links a { font-size: 0.9rem; transition: color 0.2s; }
+.tf-footer-links a:hover { color: var(--tf-accent); }
+.tf-footer-contact p { display: flex; align-items: flex-start; gap: 8px; font-size: 0.9rem; margin-bottom: 9px; }
+.tf-footer-contact i { color: var(--tf-accent); margin-top: 3px; width: 14px; }
+.tf-footer-bottom {
+    border-top: 1px solid #1e293b;
+    text-align: center;
+    padding: 16px 24px;
+    font-size: 0.85rem;
+    color: #475569;
+}
+
+/* -------------------------------------------------------
+   TOAST THÔNG BÁO
+------------------------------------------------------- */
+.tf-toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 10000;
+    min-width: 240px;
+    max-width: 380px;
+    padding: 14px 20px;
+    border-radius: var(--tf-radius);
+    background: #1e293b;
+    color: #f8fafc;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: var(--tf-shadow-md);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+.tf-toast.tf-toast-show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.tf-toast.tf-toast-success { background: #166534; }
+.tf-toast.tf-toast-error   { background: #7f1d1d; }
+.tf-toast.tf-toast-warning { background: #78350f; }
+.tf-toast.tf-toast-info    { background: #0c4a6e; }
+
+/* -------------------------------------------------------
+   BADGE TRẠNG THÁI BOOKING (dùng chung)
+------------------------------------------------------- */
+.tf-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+.tf-badge-pending   { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+.tf-badge-confirmed { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.tf-badge-completed { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.tf-badge-cancelled { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+/* -------------------------------------------------------
+   CARD / CONTAINER TIỆN ÍCH
+------------------------------------------------------- */
+.tf-card {
+    background: var(--tf-surface);
+    border-radius: 14px;
+    border: 1px solid var(--tf-border);
+    box-shadow: var(--tf-shadow);
+    overflow: hidden;
+}
+.tf-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--tf-border);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--tf-text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.tf-card-body { padding: 20px; }
+
+/* -------------------------------------------------------
+   RESPONSIVE
+------------------------------------------------------- */
+.hide-xs { display: inline; }
+
+@media (max-width: 900px) {
+    .tf-nav-links,
+    .tf-nav-auth .tf-btn-primary { display: none; }
+    .tf-hamburger { display: flex; }
+    .hide-xs { display: none; }
+}
+
+@media (max-width: 640px) {
+    .tf-footer-container { grid-template-columns: 1fr; gap: 24px; }
+}

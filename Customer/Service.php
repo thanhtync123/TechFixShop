@@ -94,6 +94,7 @@ if ($result && $result->num_rows > 0) {
                                     <div class="content">
                                         <h3><?= htmlspecialchars($service['Title']) ?></h3>
                                         <p><?= htmlspecialchars(mb_strimwidth($service['Description'], 0, 90, "...")) ?></p>
+                                        <a href="/TechFixPHP/pages/public_page/service_detail.php?id=<?= $service['id'] ?>" class="btn">Xem chi tiết</a>
                                         <a href="book.php?service_id=<?= $service['id'] ?>" class="btn">Đặt Dịch Vụ</a>
                                     </div>
                                 </div>

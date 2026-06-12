@@ -11,161 +11,100 @@ $user = $_SESSION['user'] ?? null;
 $customer_id = $user['id'] ?? null;
 
 $result = false;
-
 if ($customer_id && isset($conn)) {
     $query = "
-        SELECT 
-            b.id, 
-            b.appointment_time, 
-            b.final_price,  
-            b.status, 
-            b.created_at,
-            b.lat, 
-            b.lng,
-            b.payment_status,
-            s.name AS service_name
+        SELECT b.id, b.appointment_time, b.final_price, b.status, b.created_at,
+               b.lat, b.lng, b.payment_status, s.name AS service_name
         FROM bookings b
         JOIN services s ON b.service_id = s.id
         WHERE b.customer_id = ?
         ORDER BY b.created_at DESC
     ";
-
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param("i", $customer_id);
         $stmt->execute();
         $result = $stmt->get_result();
-    } else {
-        die("<pre>Lỗi SQL: " . $conn->error . "</pre>");
     }
 }
+
+$pageTitle = 'Lịch đặt của tôi - TECHFIX';
+include __DIR__ . '/template/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lịch đặt của tôi - TECHFIX</title>
-<link rel="stylesheet" href="../../assets/css/customer.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <style>
-    body{background:#f5f6fa;font-family:'Poppins',sans-serif}
-    .container{max-width:1000px;margin:60px auto;background:#fff;border-radius:10px;padding:30px;box-shadow:0 3px 10px rgba(0,0,0,0.1);position:relative}
-    h2{text-align:center;color:#333;margin-bottom:20px}
-    table{width:100%;border-collapse:collapse;text-align:center}
-    th,td{padding:12px;border-bottom:1px solid #ddd; vertical-align: middle;} 
-    th{background:#0099ff;color:#fff}
-    
-    .status{padding:5px 12px;border-radius:8px;font-weight:600;display:inline-block;min-width:110px; font-size: 0.85rem;}
-    
-    .pending{background:#ffeb3b;color:#333} 
-    .confirmed{background:#17a2b8;color:#fff} 
-    .fixing{background:#fd7e14;color:#fff} 
-    
-    .completed{background:#28a745;color:#fff} 
-    .paid{background:#28a745;color:#fff} 
-    
-    .cancelled{background:#f44336;color:#fff} 
-
-    .cash-hint { font-size: 11px; color: #666; font-style: italic; display: block; margin-top: 4px; }
-    .done-hint { font-size: 11px; color: #28a745; font-weight: bold; display: block; margin-top: 4px; }
-
-    .detail-link{color:#0099ff;text-decoration:none;font-weight:500}
-    .detail-link:hover{text-decoration:underline}
-    .back-home{text-decoration: none; display: inline-block; margin-bottom: 15px; color: #555;}
-
-    .map-btn {
-        display: inline-block; margin-top: 5px; padding: 4px 8px;
-        background-color: #e7f1ff; color: #0d6efd; border-radius: 5px;
-        text-decoration: none; font-size: 11px; font-weight: bold;
-        border: 1px solid #0d6efd; transition: 0.3s;
-    }
-    .map-btn:hover { background-color: #0d6efd; color: white; }
-
-    .qr-btn {
-        display: inline-block; margin-top: 5px; padding: 4px 8px;
-        background-color: #28a745; color: white; border-radius: 5px;
-        text-decoration: none; font-size: 11px; font-weight: bold;
-        border: 1px solid #28a745; transition: 0.3s; cursor: pointer;
-    }
-    .qr-btn:hover { background-color: #218838; }
-
-    #notificationBell{position:fixed;top:20px;right:30px;font-size:28px;cursor:pointer;color:#0099ff; z-index: 1000;}
-    #notificationBell .badge{background:red;color:#fff;font-size:12px;padding:2px 6px;border-radius:50%;position:absolute;top:-5px;right:-8px}
-    #notificationPopup{display:none;position:fixed;top:60px;right:30px;width:320px;background:#fff;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.1);z-index:999}
-    #notificationPopup .list{max-height:300px;overflow-y:auto;padding:0;margin:0;list-style:none}
-    #notificationPopup .list li{padding:10px;border-bottom:1px solid #eee;font-size:14px}
-    #notificationPopup .list li.unread{background:#f0f8ff;font-weight:700}
-    
-    .no-booking{text-align:center;padding:30px;color:#777;font-size:16px}
+.mb-page { max-width: 1100px; margin: 30px auto; padding: 0 16px; }
+.mb-page h2 { text-align: center; color: var(--tf-text, #1e293b); margin-bottom: 20px; font-size: 1.6rem; }
+.mb-table-wrap { background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); overflow: hidden; }
+.mb-table { width: 100%; border-collapse: collapse; text-align: center; }
+.mb-table th, .mb-table td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+.mb-table th { background: #1d4ed8; color: #fff; font-size: 0.85rem; font-weight: 600; }
+.mb-table tbody tr:hover { background: #f8faff; }
+.mb-table td { font-size: 0.9rem; color: #374151; }
+.cash-hint { font-size: 11px; color: #666; font-style: italic; display: block; margin-top: 4px; }
+.done-hint { font-size: 11px; color: #16a34a; font-weight: bold; display: block; margin-top: 4px; }
+.detail-link { color: #1d4ed8; font-weight: 500; }
+.detail-link:hover { text-decoration: underline; }
+.map-btn { display: inline-block; margin-top: 5px; padding: 3px 8px; background: #eff6ff; color: #1d4ed8; border-radius: 5px; font-size: 11px; font-weight: bold; border: 1px solid #bfdbfe; }
+.qr-btn { display: inline-block; margin-top: 5px; padding: 3px 8px; background: #dcfce7; color: #16a34a; border-radius: 5px; font-size: 11px; font-weight: bold; border: 1px solid #bbf7d0; cursor: pointer; }
+.no-booking { text-align: center; padding: 50px; color: #94a3b8; font-size: 1rem; }
+/* Notification */
+#notificationBell { position: fixed; bottom: 80px; right: 24px; font-size: 26px; cursor: pointer; color: #1d4ed8; z-index: 1000; background: #fff; width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+#notificationBell .badge { background: #dc2626; color: #fff; font-size: 11px; padding: 2px 5px; border-radius: 50%; position: absolute; top: 2px; right: 2px; }
+#notificationPopup { display: none; position: fixed; bottom: 140px; right: 24px; width: 320px; background: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.12); z-index: 999; }
+#notificationPopup .list { max-height: 300px; overflow-y: auto; padding: 0; margin: 0; list-style: none; }
+#notificationPopup .list li { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
+#notificationPopup .list li.unread { background: #eff6ff; font-weight: 600; }
 </style>
-</head>
-<body>
 
-<div id="notificationBell">
-    🔔 <span class="badge" id="notificationCount">0</span>
-</div>
-<div id="notificationPopup">
-    <ul class="list" id="notificationList"><li>Đang tải...</li></ul>
-</div>
-
-<div class="container">
-    <h2>📅 Lịch đặt dịch vụ của tôi</h2>
-    <a href="/TechFixPHP/index.php" class="back-home">🏠 Quay lại trang chủ</a>
+<div class="mb-page">
+    <h2><i class="fa-solid fa-calendar-days" style="color:#1d4ed8"></i> Lịch đặt dịch vụ của tôi</h2>
 
     <?php if ($result && $result->num_rows > 0): ?>
-        <table>
+        <div class="mb-table-wrap">
+        <table class="mb-table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Tên dịch vụ</th>
                     <th>Ngày hẹn</th>
                     <th>Chi phí</th>
-                    <th>Trạng thái</th> 
+                    <th>Trạng thái</th>
                     <th>Ngày đặt</th>
-                    <th>Chi tiết</th> 
+                    <th>Chi tiết</th>
                     <th>Đánh giá</th>
                 </tr>
             </thead>
             <tbody>
                 <?php $i = 1; while ($row = $result->fetch_assoc()): ?>
                     <tr>
-                        <td><?= $i++ ?></td>
+                    <td><?= $i++ ?></td>
                         <td><?= htmlspecialchars($row['service_name']) ?></td>
                         <td><?= date('d/m/Y', strtotime($row['appointment_time'])) ?></td>
                         
-                        <td style="color: #d9534f; font-weight: bold;">
+                        <td style="color:#dc2626; font-weight: bold;">
                             <?= number_format($row['final_price'], 0, ',', '.') ?>đ
                         </td>
 
                         <td>
-                            <span class="status <?= $row['status'] ?>">
-                                <?php 
-                                    $statusMap = [
-                                        'pending'   => 'Chờ xác nhận',
-                                        'confirmed' => 'Đã có thợ',
-                                        'in_progress' => 'Đang thực hiện', 
-                                        'fixing'    => 'Đang thực hiện',
-                                        'completed' => 'Hoàn thành', 
-                                        'paid'      => 'Đã xong', 
-                                        'cancelled' => 'Đã hủy'
-                                    ];
-                                    echo $statusMap[$row['status']] ?? ucfirst($row['status']);
-                                ?>
-                            </span>
+                            <?php
+                                $stt = $row['status'];
+                                $statusMap = [
+                                    'pending'   => ['label' => 'Chờ xác nhận', 'class' => 'tf-badge tf-badge-pending'],
+                                    'confirmed' => ['label' => 'Đã có thợ',    'class' => 'tf-badge tf-badge-confirmed'],
+                                    'in_progress'=> ['label'=> 'Đang làm',     'class' => 'tf-badge tf-badge-confirmed'],
+                                    'fixing'    => ['label' => 'Đang làm',     'class' => 'tf-badge tf-badge-confirmed'],
+                                    'completed' => ['label' => 'Hoàn thành',   'class' => 'tf-badge tf-badge-completed'],
+                                    'paid'      => ['label' => 'Đã xong',      'class' => 'tf-badge tf-badge-completed'],
+                                    'cancelled' => ['label' => 'Đã hủy',       'class' => 'tf-badge tf-badge-cancelled'],
+                                ];
+                                $info = $statusMap[$stt] ?? ['label' => ucfirst($stt), 'class' => 'tf-badge'];
+                            ?>
+                            <span class="<?= $info['class'] ?>"><?= $info['label'] ?></span>
 
-                            <?php 
-                                if ($row['status'] === 'completed' || $row['status'] === 'paid' || $row['payment_status'] === 'paid'): 
-                            ?>
-                                <span class="done-hint">
-                                    <i class="fa-solid fa-check"></i> Đã thanh toán
-                                </span>
-                            
-                            <?php 
-                                elseif ($row['status'] !== 'cancelled'): 
-                            ?>
-                                <span class="cash-hint">
-                                    Thanh toán tiền mặt sau khi xong
-                                </span>
+                            <?php if (in_array($stt, ['completed','paid']) || $row['payment_status'] === 'paid'): ?>
+                                <span class="done-hint"><i class="fa-solid fa-check"></i> Đã thanh toán</span>
+                            <?php elseif ($stt !== 'cancelled'): ?>
+                                <span class="cash-hint">Thanh toán tiền mặt sau khi xong</span>
                             <?php endif; ?>
                         </td>
 
@@ -205,12 +144,24 @@ if ($customer_id && isset($conn)) {
                 <?php endwhile; ?>
             </tbody>
         </table>
+        </div>
     <?php else: ?>
-        <p class="no-booking">😕 Bạn chưa có lịch đặt nào.</p>
+        <div class="no-booking">
+            <i class="fa-regular fa-calendar-xmark" style="font-size:3rem; display:block; margin-bottom:12px; color:#cbd5e1;"></i>
+            Bạn chưa có lịch đặt nào.
+            <br><a href="/TechFixPHP/Customer/book.php" class="tf-btn tf-btn-primary" style="margin-top:16px; display:inline-flex;">
+                <i class="fa-solid fa-calendar-plus"></i> Đặt lịch ngay
+            </a>
+        </div>
     <?php endif; ?>
 </div>
 
-<div id="qrModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+<div id="notificationBell">
+    🔔 <span class="badge" id="notificationCount">0</span>
+</div>
+<div id="notificationPopup">
+    <ul class="list" id="notificationList"><li>Đang tải...</li></ul>
+</div>
     <div style="background:white; padding:30px; border-radius:15px; text-align:center; max-width:90%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: fadeIn 0.3s;">
         <h3 style="margin-top:0; color: #333;">Đưa mã này cho thợ quét</h3>
         <p style="color:#666; font-size:14px;">Để xác nhận thợ đã đến nơi và bắt đầu làm việc</p>
